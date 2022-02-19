@@ -27,6 +27,10 @@
     border-radius: 5px;
 }
 
+/* .leaflet-top.leaflet-right .leaflet-control-layers:nth-child(3) .leaflet-control-layers-toggle {
+    background-image: ..
+} */
+
 #side-bar {
     height: 92vh;
     width: 30%;

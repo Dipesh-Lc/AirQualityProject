@@ -1,5 +1,22 @@
 var map = L.map("map").setView([28.209631947920577, 83.98551214262703], 12);
 
+var pm10chart;
+var pm2_5chart;
+var myChart;
+
+var healthy = 0;
+var moderate = 0;
+var unhealthy_s = 0;
+var unhealthy = 0;
+var veryunhealthy = 0;
+var hazardous = 0;
+
+var healthy1 = 0;
+var moderate1 = 0;
+var unhealthy_s1 = 0;
+var unhealthy1 = 0;
+var veryunhealthy1 = 0;
+var hazardous1 = 0;
 
 $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
 
@@ -24,6 +41,75 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
   map.on('drag', function () {
     map.panInsideBounds(bounds, { animate: false });
   });
+
+  function getPm10Value(d) {
+    return d > 424 ? hazardous++ :
+      d > 354 ? veryunhealthy++ :
+        d > 254 ? unhealthy++ :
+          d > 154 ? unhealthy_s++ :
+            d > 54 ? moderate++ :
+              healthy++;
+  }
+
+  function getPm2_5Value(d) {
+    return d > 250.4 ? hazardous1++ :
+      d > 150.4 ? veryunhealthy1++ :
+        d > 55.4 ? unhealthy1++ :
+          d > 35.4 ? unhealthy_s1++ :
+            d > 12 ? moderate1++ :
+              healthy1++;
+  }
+
+  // Chart Section
+  function createChart(e) {
+    function newChart(data, type) {
+      const labels = [
+        "Healthy",
+        "Moderate",
+        "Unhealthy for S",
+        "Unhealthy",
+        "Very Unhealthy",
+        "Hazardous",
+      ];
+
+      const datas = {
+        labels: labels,
+        datasets: [{
+          label: `Air Quality Variation of ${type}`,
+          backgroundColor: [
+            'green',
+            'yellow',
+            'orange',
+            'red',
+            'purple',
+            'maroon'
+          ],
+          borderColor: [
+            'green',
+            'yellow',
+            'orange',
+            'red',
+            'purple',
+            'maroon'
+          ],
+          data: data,
+        }]
+      };
+
+      const config = {
+        type: 'bar',
+        data: datas,
+        options: {}
+      };
+
+      return config
+    }
+    e.forEach(m => { getPm10Value(m["pm10"]) });
+    e.forEach(m => { getPm2_5Value(m["pm2_5"]) });
+    pm10chart = newChart([healthy, moderate, unhealthy_s, unhealthy, veryunhealthy, hazardous], "PM10")
+    pm2_5chart = newChart([healthy1, moderate1, unhealthy_s1, unhealthy1, veryunhealthy1, hazardous1], "PM2.5")
+    myChart = new Chart(document.getElementById('myChart'), pm10chart)
+  }
 
   function getPm10Color(d) {
     return d > 424 ? 'maroon' :
@@ -70,24 +156,46 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
         pm2_5_data.push(L.circle([e['lat'], e['lng']], { radius: 50 }).setStyle({ color: getPm2_5Color(e["pm2_5"]), fillOpacity: 1 }).on({ "mouseover": function (t) { showData(t, e) }, "mouseout": function (t) { hideData(t) } }))
       });
 
+      createChart(data)
+
       var pm10 = L.featureGroup(pm10_data).addTo(map)
-      var pm2_5 = L.featureGroup(pm2_5_data).addTo(map)
+      var pm2_5 = L.featureGroup(pm2_5_data)
 
       var groupedOverlays = {
-        "PM10": pm10,
-        "PM2.5": pm2_5
+        "Polutants": {
+          "PM10": pm10,
+          "PM2.5": pm2_5
+        }
       };
 
-      L.control.layers(baseMaps, groupedOverlays).addTo(map);
+      L.control.groupedLayers(baseLayers, groupedOverlays, { exclusiveGroups: ["Polutants"] }).addTo(map);
     }
   });
 
-  var baseMaps = {
+  var baseLayers = {
     "Imagery": Esri_WorldImagery,
     "Open Street Map": osm,
   };
 
 });
+
+map.on('overlayadd', onOverlayAdd);
+
+function changeChart10(){
+  myChart.data.datasets[0].data = [healthy, moderate, unhealthy_s, unhealthy, veryunhealthy, hazardous]
+  myChart.data.datasets[0].label = "Air Quality Variation of PM10"
+  myChart.update()
+}
+
+function changeChart2_5(){
+  myChart.data.datasets[0].data = [healthy1, moderate1, unhealthy_s1, unhealthy1, veryunhealthy1, hazardous1]
+  myChart.data.datasets[0].label = "Air Quality Variation of PM2.5"
+  myChart.update()
+}
+
+function onOverlayAdd(e){
+  e.name === "PM10" ? changeChart10() : changeChart2_5()
+}
 
 // Legend Section
 L.control.Legend({
@@ -132,47 +240,4 @@ L.control.Legend({
   ]
 }).addTo(map);
 
-// Chart Section
-const labels = [
-  "Healthy",
-  "Moderate",
-  "Unhealthy for S",
-  "Unhealthy",
-  "Very Unhealthy",
-  "Hazardous",
-];
 
-const data = {
-  labels: labels,
-  datasets: [{
-    label: 'Air Quality Variation',
-    backgroundColor: [
-      'green',
-      'yellow',
-      'orange',
-      'red',
-      'purple',
-      'maroon'
-    ],
-    borderColor: [
-      'green',
-      'yellow',
-      'orange',
-      'red',
-      'purple',
-      'maroon'
-    ],
-    data: [5, 10, 5, 2, 20, 30],
-  }]
-};
-
-const config = {
-  type: 'bar',
-  data: data,
-  options: {}
-};
-
-const myChart = new Chart(
-  document.getElementById('myChart'),
-  config
-);
