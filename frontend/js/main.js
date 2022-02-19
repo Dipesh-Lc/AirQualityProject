@@ -1,7 +1,5 @@
 var map = L.map("map").setView([28.209631947920577, 83.98551214262703], 12);
 
-var pm10chart;
-var pm2_5chart;
 var myChart;
 
 var healthy = 0;
@@ -62,7 +60,8 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
 
   // Chart Section
   function createChart(e) {
-    function newChart(data, type) {
+    e.forEach(m => { getPm10Value(m["pm10"]) });
+    e.forEach(m => { getPm2_5Value(m["pm2_5"]) });
       const labels = [
         "Healthy",
         "Moderate",
@@ -75,7 +74,7 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
       const datas = {
         labels: labels,
         datasets: [{
-          label: `Air Quality Variation of ${type}`,
+          label: 'Air Quality Variation of PM10',
           backgroundColor: [
             'green',
             'yellow',
@@ -92,7 +91,7 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
             'purple',
             'maroon'
           ],
-          data: data,
+          data: [healthy, moderate, unhealthy_s, unhealthy, veryunhealthy, hazardous],
         }]
       };
 
@@ -102,13 +101,7 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
         options: {}
       };
 
-      return config
-    }
-    e.forEach(m => { getPm10Value(m["pm10"]) });
-    e.forEach(m => { getPm2_5Value(m["pm2_5"]) });
-    pm10chart = newChart([healthy, moderate, unhealthy_s, unhealthy, veryunhealthy, hazardous], "PM10")
-    pm2_5chart = newChart([healthy1, moderate1, unhealthy_s1, unhealthy1, veryunhealthy1, hazardous1], "PM2.5")
-    myChart = new Chart(document.getElementById('myChart'), pm10chart)
+      myChart = new Chart(document.getElementById('myChart'), config)
   }
 
   function getPm10Color(d) {
