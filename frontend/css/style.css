@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#heading {
+    margin: 0!important;
+    height: 8vh;
+}
+
+#main-title {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 600;
+    padding: 10px;
+}
+
+#main-body {
+    width: 100vw;
+    height: 92vh;
+}
+
+#map  {
+    width: 70%;
+    height: 100%;
+    border-radius: 5px;
+}
+
+#side-bar {
+    height: 92vh;
+    width: 30%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+#static-box {
+    width: 100%;
+    height: 40%;
+}
+
+#hover-box {
+    width: 100%;
+    height: 60%;
+    padding: 10px;
+    font-size: larger;
+    font-weight: bolder;
+}
+
+.leaflet-legend-item > span {
+    padding-left: 10px;
+}
