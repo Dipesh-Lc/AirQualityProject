@@ -1,0 +1,32 @@
+autopep8==1.6.0
+backcall @ file:///home/ktietz/src/ci/backcall_1611930011877/work
+colorama @ file:///tmp/build/80754af9/colorama_1607707115595/work
+cycler==0.10.0
+debugpy @ file:///C:/ci/debugpy_1629222819322/work
+decorator @ file:///tmp/build/80754af9/decorator_1621259047763/work
+GDAL==3.3.1
+ipykernel @ file:///C:/ci/ipykernel_1629995228567/work/dist/ipykernel-6.2.0-py3-none-any.whl
+ipython @ file:///C:/ci/ipython_1628244015142/work
+ipython-genutils @ file:///tmp/build/80754af9/ipython_genutils_1606773439826/work
+jedi @ file:///C:/ci/jedi_1611341083684/work
+jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1616770841739/work
+jupyter-core @ file:///C:/ci/jupyter_core_1612213515523/work
+kiwisolver==1.3.2
+matplotlib==3.4.3
+matplotlib-inline @ file:///tmp/build/80754af9/matplotlib-inline_1628242447089/work
+numpy @ file:///D:/bld/numpy_1629092210914/work
+parso @ file:///tmp/build/80754af9/parso_1617223946239/work
+pickleshare @ file:///tmp/build/80754af9/pickleshare_1606932040724/work
+Pillow==8.3.2
+prompt-toolkit @ file:///tmp/build/80754af9/prompt-toolkit_1616415428029/work
+pycodestyle==2.8.0
+Pygments @ file:///tmp/build/80754af9/pygments_1629234116488/work
+pyparsing==2.4.7
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
+pywin32==228
+pyzmq @ file:///C:/ci/pyzmq_1628276105793/work
+six @ file:///tmp/build/80754af9/six_1623709665295/work
+toml==0.10.2
+tornado @ file:///C:/ci/tornado_1606924294691/work
+traitlets @ file:///home/ktietz/src/ci/traitlets_1611929699868/work
+wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
