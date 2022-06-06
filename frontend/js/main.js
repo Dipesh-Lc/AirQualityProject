@@ -58,50 +58,72 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
               healthy1++;
   }
 
+  //Average section
+  function avgpm(d) {
+    var count = 0;
+    var total_pm10 = 0;
+    var total_pm25 = 0;
+    var avg_pm10 = 0;
+    var avg_pm25 = 0;
+
+    d.forEach(function (item) {
+      total_pm10 += item["pm10"];
+      total_pm25 += item["pm2_5"];
+      count++;
+    });
+    avg_pm10 = total_pm10 / count;
+    avg_pm25 = total_pm25 / count;
+    console.log(avg_pm10, avg_pm25)
+
+    $('#avg_pm10').text(" " + avg_pm10)
+    $('#avg_pm25').text(" " + avg_pm25)
+
+  }
+
   // Chart Section
   function createChart(e) {
     e.forEach(m => { getPm10Value(m["pm10"]) });
     e.forEach(m => { getPm2_5Value(m["pm2_5"]) });
-      const labels = [
-        "Healthy",
-        "Moderate",
-        "Unhealthy for S",
-        "Unhealthy",
-        "Very Unhealthy",
-        "Hazardous",
-      ];
+    const labels = [
+      "Healthy",
+      "Moderate",
+      "Unhealthy for S.G.",
+      "Unhealthy",
+      "Very Unhealthy",
+      "Hazardous",
+    ];
 
-      const datas = {
-        labels: labels,
-        datasets: [{
-          label: 'Air Quality Variation of PM10',
-          backgroundColor: [
-            'green',
-            'yellow',
-            'orange',
-            'red',
-            'purple',
-            'maroon'
-          ],
-          borderColor: [
-            'green',
-            'yellow',
-            'orange',
-            'red',
-            'purple',
-            'maroon'
-          ],
-          data: [healthy, moderate, unhealthy_s, unhealthy, veryunhealthy, hazardous],
-        }]
-      };
+    const datas = {
+      labels: labels,
+      datasets: [{
+        label: 'Air Quality Variation of PM10',
+        backgroundColor: [
+          'green',
+          'yellow',
+          'orange',
+          'red',
+          'purple',
+          'maroon'
+        ],
+        borderColor: [
+          'green',
+          'yellow',
+          'orange',
+          'red',
+          'purple',
+          'maroon'
+        ],
+        data: [healthy, moderate, unhealthy_s, unhealthy, veryunhealthy, hazardous],
+      }]
+    };
 
-      const config = {
-        type: 'bar',
-        data: datas,
-        options: {}
-      };
+    const config = {
+      type: 'bar',
+      data: datas,
+      options: {}
+    };
 
-      myChart = new Chart(document.getElementById('myChart'), config)
+    myChart = new Chart(document.getElementById('myChart'), config)
   }
 
   function getPm10Color(d) {
@@ -122,21 +144,28 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
               'green';
   }
 
+
   // layers and overlays begining
   function showData(t, e) {
+    $('#dtime').text(" " + e['dtime']).css('color', t.target.options["color"])
     $('#lat').text(" " + e['lat']).css('color', t.target.options["color"])
     $('#lng').text(" " + e['lng']).css('color', t.target.options["color"])
     $('#pm10').text(" " + e['pm10']).css('color', t.target.options["color"])
     $('#pm2_5').text(" " + e['pm2_5']).css('color', t.target.options["color"])
-    t.target.setRadius(200)
+    $('#temp').text(" " + e['temp']).css('color', t.target.options["color"])
+    $('#hum').text(" " + e['hum']).css('color', t.target.options["color"])
+    t.target.setRadius(10)
   }
 
   function hideData(t) {
+    $('#dtime').text("")
     $('#lat').text("")
     $('#lng').text("")
     $('#pm10').text("")
     $('#pm2_5').text("")
-    t.target.setRadius(50)
+    $('#temp').text("")
+    $('#hum').text("")
+    t.target.setRadius(5)
   }
 
   $.ajax({
@@ -145,11 +174,13 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
       var pm10_data = [];
       var pm2_5_data = [];
       data.forEach(e => {
-        pm10_data.push(L.circle([e['lat'], e['lng']], { radius: 50 }).setStyle({ color: getPm10Color(e["pm10"]), fillOpacity: 1 }).on({ "mouseover": function (t) { showData(t, e) }, "mouseout": function (t) { hideData(t) } }))
-        pm2_5_data.push(L.circle([e['lat'], e['lng']], { radius: 50 }).setStyle({ color: getPm2_5Color(e["pm2_5"]), fillOpacity: 1 }).on({ "mouseover": function (t) { showData(t, e) }, "mouseout": function (t) { hideData(t) } }))
+        pm10_data.push(L.circle([e['lat'], e['lng']], { radius: 5 }).setStyle({ color: getPm10Color(e["pm10"]), fillOpacity: 1 }).on({ "mouseover": function (t) { showData(t, e) }, "mouseout": function (t) { hideData(t) } }))
+        pm2_5_data.push(L.circle([e['lat'], e['lng']], { radius: 5 }).setStyle({ color: getPm2_5Color(e["pm2_5"]), fillOpacity: 1 }).on({ "mouseover": function (t) { showData(t, e) }, "mouseout": function (t) { hideData(t) } }))
       });
 
       createChart(data)
+
+      avgpm(data)
 
       var pm10 = L.featureGroup(pm10_data).addTo(map)
       var pm2_5 = L.featureGroup(pm2_5_data)
@@ -174,19 +205,19 @@ $.getJSON("static/pokhara.geojson").then(function (geoJSON) {
 
 map.on('overlayadd', onOverlayAdd);
 
-function changeChart10(){
+function changeChart10() {
   myChart.data.datasets[0].data = [healthy, moderate, unhealthy_s, unhealthy, veryunhealthy, hazardous]
   myChart.data.datasets[0].label = "Air Quality Variation of PM10"
   myChart.update()
 }
 
-function changeChart2_5(){
+function changeChart2_5() {
   myChart.data.datasets[0].data = [healthy1, moderate1, unhealthy_s1, unhealthy1, veryunhealthy1, hazardous1]
   myChart.data.datasets[0].label = "Air Quality Variation of PM2.5"
   myChart.update()
 }
 
-function onOverlayAdd(e){
+function onOverlayAdd(e) {
   e.name === "PM10" ? changeChart10() : changeChart2_5()
 }
 
@@ -207,7 +238,7 @@ L.control.Legend({
       fillColor: "yellow",
     },
     {
-      label: "Unhealthy for S",
+      label: "Unhealthy for S.G.",
       type: "rectangle",
       color: "orange",
       fillColor: "orange",

@@ -107,7 +107,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "HOST": "localhost",
-        "NAME": "airquality",
+        "NAME": "airquality1",
         "PASSWORD": "password",
         "PORT": 5432,
         "USER": "postgres",
@@ -140,6 +140,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
+
+#DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 USE_I18N = True
 
